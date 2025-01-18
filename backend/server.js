@@ -5,6 +5,8 @@ import { AImodel } from "./controllers/geminiAi.js"
 import cors from "cors"
 import bodyParser from "body-parser"
 import dotenv from "dotenv"
+import { Disease } from "./models/Disease.js"
+import path from 'path'
 
 dotenv.config()
 
@@ -42,6 +44,11 @@ io.use((socket, next) => {
     next()
 });
 
+const saveBufferToFile = async (buffer) => {
+    const tempPath = path.join(__dirname, `temp-${Date.now()}.jpg`);
+    await fs.promises.writeFile(tempPath, buffer);
+    return tempPath;
+};
 
 io.on('connection', (socket) => {
     console.log(socket.id, socket.user_name)
@@ -113,6 +120,8 @@ All responses should be in plain text, free from special characters.`},
     socket.on('upload', async (file, weatherData) => {
         console.log(weatherData)
         console.log(file)
+        const tempFilePath = await saveBufferToFile(file);
+
         actual_history.push({
             role: "user",
             parts: [
@@ -127,6 +136,13 @@ All responses should be in plain text, free from special characters.`},
         })
         const result = await chatSession.sendMessage(`Analyze the image and respond according to above prompt also the weather conditions are ${JSON.stringify(weatherData)}`)
         const Airesponse = result.response.text()
+
+        const uploadResult = await uploadOnCloudinary(tempFilePath);
+        const imageUrl = uploadResult ? uploadResult.url : null;
+
+        const newDiagnosis = await Disease.create({...Airesponse,weatherData,img: imageUrl});
+        console.log(newDiagnosis);
+    
         socket.emit("response", Airesponse)
     })
 })
@@ -134,9 +150,24 @@ All responses should be in plain text, free from special characters.`},
 app.use(cors())
 app.use(bodyParser.json())
 
+import mongoose from "mongoose";
+import { uploadOnCloudinary } from "./cloudinary.js"
 
+const connectDB = async () => {
+    try {
+        const connectionInstance = await mongoose.connect(`${process.env.MONGODB_URL}`);
+        console.log("Mongo Db Connected" , connectionInstance.connection.host);
+    } catch (error) {
+        console.error("Error connecting to MongoDB",error);
+        process.exit(1)
+    }
+}
 
 httpserver.listen(3000, () => {
+    connectDB().
+    then(() => {console.log("Connected DB")}).
+    catch((err) => {console.log(err)});
+    
     console.log("server is running on port 3000")
 })
 
