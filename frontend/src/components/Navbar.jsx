@@ -19,8 +19,8 @@ const Navbar = () => {
           <Link to="/crop-diagnostics" className="hover:underline">
             <Button variant="ghost" className="text-white">Crop Diagnostics</Button>
           </Link>
-          <Link to="/cattle-health" className="hover:underline">
-            <Button variant="ghost" className="text-white">Cattle Health</Button>
+          <Link to="/history" className="hover:underline">
+            <Button variant="ghost" className="text-white">Previous Diagnostics</Button>
           </Link>
           <Link to="/community-forum" className="hover:underline">
             <Button variant="ghost" className="text-white">Community Forum</Button>
