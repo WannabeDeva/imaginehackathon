@@ -165,6 +165,7 @@ const DiagnosticsDetails = () => {
                   </div>
                 ))}
               </div>
+              
 
               <div className="bg-green-50 p-6 rounded-lg mb-8">
                 <h3 className="text-xl font-bold text-green-800 mb-4 flex items-center gap-2">
