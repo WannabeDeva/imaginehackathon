@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import { Leaf, Upload, Send, MessageSquare, RefreshCw } from "lucide-react";
+import { socket } from "@/lib/socket";
+import axios from "axios";
 
 const CropDiagnostics = () => {
   const [image, setImage] = useState(null);
@@ -11,6 +13,124 @@ const CropDiagnostics = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([]);
   const [userMessage, setUserMessage] = useState("");
+  const[weatherData, setWeatherData] = useState();
+  const location = useRef();
+
+  useEffect(() => {
+    async function getCoordinates() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            console.log(position.coords.latitude, position.coords.longitude);
+            location.current = {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            };
+            getWeather(); // Call getWeather after setting location
+          },
+          (err) => {
+            console.error(err.message);
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
+    }
+    
+
+    async function getWeather() {
+      if (location.current) {
+        const { latitude, longitude } = location.current;
+        try {
+          const response = await axios.get(
+            `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=ae416caf02a12b79c3108f22f90d101b`
+          );
+          console.log(response.data);
+          const {
+            humidity,
+            pressure,
+            sea_level,
+            temp,
+            temp_max,
+            temp_min,
+          } = response.data.main;
+
+            setWeatherData({
+            humidity,
+            pressure,
+            sea_level,
+            temperature: `${temp} K`,
+            temp_max: `${temp_max} K`,
+            temp_min: `${temp_min} K`
+            });
+
+        } catch (error) {
+          console.error("Error fetching weather data", error);
+        }
+      } else {
+        console.error("Location is not available");
+      }
+    }
+    getCoordinates();
+  }, []);
+
+  const healthyPlants = [
+    {
+      "name": "Apple",
+      "characteristics": [
+        "Glossy green surface",
+        "Firm texture",
+        "No visible spots or discoloration"
+      ],
+      "img": "/appleHealthy.jpg"
+    },
+    {
+      "name": "Corn",
+      "characteristics": [
+        "Long and broad green blades",
+        "Smooth and even coloration",
+        "No signs of wilting or browning tips"
+      ],
+      "img":'/corn.jpg'
+    },
+    {
+      "name": "Grape",
+      "characteristics": [
+        "Broad and lobed green leaves",
+        "Smooth texture with no curling",
+        "Absence of powdery mildew or discoloration"
+      ],
+      "img":'/grape.jpg'
+      },
+    {
+      "name": "Orange",
+      "characteristics": [
+        "Dark green, shiny, and leathery leaves",
+        "Firm and well-attached to branches",
+        "No yellowing or pest damage"
+      ],
+      "img":'/orange.jpg'
+    },
+    {
+      "name": "Potato",
+      "characteristics": [
+        "Dark green, compound leaves",
+        "Smooth and firm texture",
+        "No spots or wilting from blight"
+      ],
+      "img":'/potato.jpg'
+      },
+    {
+      "name": "Tomato",
+      "characteristics": [
+        "Dark green and deeply lobed leaves",
+        "Soft, velvety texture",
+        "No visible spots or wilting"
+      ],
+      "img":'/tomato.jpg'
+        }
+
+  ]
 
   // Existing handlers remain the same
   const handleImageUpload = (event) => {
@@ -19,23 +139,14 @@ const CropDiagnostics = () => {
       setImage(URL.createObjectURL(file));
     }
   };
-
+  
   const performDiagnosis = () => {
     setIsLoading(true);
-    setTimeout(() => {
-      setDiagnosis({
-        similarity: 75,
-        diseases: [
-          {
-            name: "Leaf Blight",
-            symptoms: "Yellowing leaves, brown spots",
-            severity: "medium",
-          },
-        ],
-        pesticides: ["Copper fungicide", "Neem oil spray", "Organic sulfur spray"],
-      });
-      setIsLoading(false);
-    }, 2000);
+    socket.connect();
+    socket.emit("upload", image, weatherData, (status) => {
+      console.log("Status",status);
+    });
+    setIsLoading(false);
   };
 
   const handleReset = () => {
@@ -58,6 +169,8 @@ const CropDiagnostics = () => {
     ]);
     setUserMessage("");
   };
+
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white">
@@ -171,6 +284,16 @@ const CropDiagnostics = () => {
                   {/* Disease Info */}
                   <div className="bg-green-50 p-6 rounded-lg mb-8">
                     <h3 className="text-xl font-bold text-green-800 mb-4">Disease Analysis:</h3>
+                    {diagnosis.diseases.map((disease, index) => (
+                      <div key={index} className="ml-6 mb-4 bg-white p-4 rounded-lg shadow-sm">
+                        <p className="text-lg font-semibold text-green-700 mb-2">{disease.name}</p>
+                        <p className="text-gray-700 mb-2">Symptoms: {disease.symptoms}</p>
+                        <p className="text-gray-600">Severity: {disease.severity}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="bg-green-50 p-6 rounded-lg mb-8">
+                    <h3 className="text-xl font-bold text-green-800 mb-4">Ideal State Characterstics:</h3>
                     {diagnosis.diseases.map((disease, index) => (
                       <div key={index} className="ml-6 mb-4 bg-white p-4 rounded-lg shadow-sm">
                         <p className="text-lg font-semibold text-green-700 mb-2">{disease.name}</p>
