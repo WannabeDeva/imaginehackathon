@@ -4,27 +4,21 @@ import fs from 'fs';
 
 // Configure Cloudinary
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET
 });
 
-export const uploadOnCloudinary = async (localpath) => {
+export const uploadOnCloudinary = async (file) => {
     try {
-        if (!localpath) return null;
-
-        const uploadResult = await cloudinary.uploader.upload(localpath, {
-            resource_type: "auto"
+        const uploadResult = await new Promise((resolve) => {
+            cloudinary.uploader.upload_stream((error, uploadResult) => {
+                return resolve(uploadResult);
+            }).end(file);
         });
-        
-        // Remove temp file after upload
-        fs.unlinkSync(localpath);
-        return uploadResult;
+        return uploadResult
 
     } catch (error) {
-        if (fs.existsSync(localpath)) {
-            fs.unlinkSync(localpath);
-        }
         console.error("Cloudinary upload error:", error);
         return null;
     }
