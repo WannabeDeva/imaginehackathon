@@ -6,6 +6,7 @@ import { FaSeedling } from "react-icons/fa"; // For Crop Diagnostics
 import { RiHistoryLine } from "react-icons/ri"; // For Diagnostics Log
 import { BsChatDots } from "react-icons/bs"; // For Chat Feature
 import Navbar from "@/components/Navbar";
+import Chatbot from "@/components/Chatbot";
 
 const LandingPage = () => {
   return (
@@ -56,6 +57,7 @@ const LandingPage = () => {
       </div>
     </div>
   </div>
+  <Chatbot />
 </section>
 
       {/* FAQ Section */}
