@@ -179,7 +179,12 @@ export default function Chatbot() {
   useEffect(() => {
     const handleResponse = (raw_response) => {
       console.log(raw_response);
-      const response = raw_response.replace("*", "")
+      let response = JSON.stringify(raw_response)
+
+      if(response.indexOf('*') > -1){
+        response = raw_response.replace('*', '')
+      }
+
       const first_index = response.indexOf(`{`);
       const last_index = response.lastIndexOf(`}`);
       // if (first_index > -1 && last_index > -1) {

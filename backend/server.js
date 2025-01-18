@@ -44,11 +44,11 @@ io.use((socket, next) => {
     next()
 });
 
-const saveBufferToFile = async (buffer) => {
-    const tempPath = path.join(__dirname, `temp-${Date.now()}.jpg`);
-    await fs.promises.writeFile(tempPath, buffer);
-    return tempPath;
-};
+// const saveBufferToFile = async (buffer) => {
+//     const tempPath = path.join(_dirname, `temp-${Date.now()}.jpg`);
+//     await fs.promises.writeFile(tempPath, buffer);
+//     return tempPath;
+// };
 
 io.on('connection', (socket) => {
     console.log(socket.id, socket.user_name)
@@ -62,16 +62,14 @@ io.on('connection', (socket) => {
                     "plantName": "",
                     "diseaseName": "",
                     "diseaseDescription": "",
-                    "remedy": "",
+                    "remedy": [],
                     "summary": ""
                 }
-               The response should include the plant's name under the field plantName, the identified disease under diseaseName, a concise description of the disease under diseaseDescription, specific remedies to treat the disease under remedy, and a brief general summary of the situation and recommended actions under summary.
+               The response should include the plant's name under the field plantName, the identified disease under diseaseName, a concise description of the disease under diseaseDescription, specific remedies to treat the disease in an array under remedy, and a brief general summary of the situation and recommended actions under summary.
 
-Ensure that the remedies and farming advice are aligned with sustainable and region-specific practices for India, Maharashtra. Use locally available solutions, taking into account the climatic and soil conditions in Maharashtra. For prevention or farming advice, ensure your suggestions are clear, concise, and practical for farmers in this region.
+Ensure that the remedies and farming advice are aligned with sustainable and region-specific practices for India, Maharashtra. Use locally available solutions, considering the climatic and soil conditions in Maharashtra. Your suggestions should be practical and relevant for farmers in this region.
 
-If the user needs further details or clarification, offer additional guidance as needed.
-
-All responses should be in plain text, free from special characters.`},
+Keep the conversation human-like and interactive. Be concise, and ensure that your responses are in plain text, without special characters. If the user requires further details or clarification, offer additional guidance in a helpful and clear manner.`},
         ],
     },
     {
@@ -120,7 +118,6 @@ All responses should be in plain text, free from special characters.`},
     socket.on('upload', async (file, weatherData) => {
         console.log(weatherData)
         console.log(file)
-        const tempFilePath = await saveBufferToFile(file);
 
         actual_history.push({
             role: "user",
@@ -136,14 +133,20 @@ All responses should be in plain text, free from special characters.`},
         })
         const result = await chatSession.sendMessage(`Analyze the image and respond according to above prompt also the weather conditions are ${JSON.stringify(weatherData)}`)
         const Airesponse = result.response.text()
-
-        const uploadResult = await uploadOnCloudinary(tempFilePath);
-        const imageUrl = uploadResult ? uploadResult.url : null;
-
-        const newDiagnosis = await Disease.create({...Airesponse,weatherData,img: imageUrl});
-        console.log(newDiagnosis);
     
-        socket.emit("response", Airesponse)
+        const uploadResult = await uploadOnCloudinary(file);
+        const imageUrl = uploadResult ? uploadResult.url : "";
+
+        const first_index = Airesponse.indexOf(`{`);
+        const last_index = Airesponse.lastIndexOf(`}`);
+
+        if (first_index > -1 && last_index > -1) {
+            const json_extract = Airesponse.slice(first_index, last_index + 1);
+            const response_json = JSON.parse(json_extract)
+            socket.emit("response", {...response_json, imageUrl})
+            const newDiagnosis = await Disease.create({...response_json, weatherData ,img: imageUrl});
+            console.log(newDiagnosis);
+        }
     })
 })
 
@@ -162,6 +165,16 @@ const connectDB = async () => {
         process.exit(1)
     }
 }
+
+app.get("/all_reports", async(req, res) => {
+    try {
+        const data = await Disease.find()
+        return res.status(200).send(data)
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send("internal server error")
+    }
+})
 
 httpserver.listen(3000, () => {
     connectDB().

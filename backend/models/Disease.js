@@ -41,7 +41,7 @@ const DiseaseSchema = new Schema({
         required: true,
     },
     remedy: {
-        type: String,
+        type: [String],
         required: true,
     },
     summary: {
