@@ -12,7 +12,7 @@ const Hero = () => {
   };
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-b from-green-50 to-white">
+    <div className="relative overflow-hidden bg-gradient-to-b from-yellow-50 to-white">
       {/* Decorative Background Elements */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-green-100 opacity-40 blur-3xl"></div>
@@ -20,7 +20,7 @@ const Hero = () => {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="py-20 md:py-28">
+        <div className="py-5 md:py-14">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="space-y-8">
