@@ -18,7 +18,7 @@ function App() {
         <Route path="/history" element={<DiagnosticsHistory />} />
         <Route path="/community-forum" element={<CommunityForum />} />
         <Route path="/analytics" element={<Analytics />} />
-        <Route path="/diagnostic-details" element={<DiagnosticDetails />} />
+        <Route path="/history/:id" element={<DiagnosticDetails />} />
         {/* <Route path="/consultation" element={<Consultation />} /> */}
       </Routes>
     </Router>

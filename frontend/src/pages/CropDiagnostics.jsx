@@ -15,6 +15,7 @@ const CropDiagnostics = () => {
   const [userMessage, setUserMessage] = useState("");
   const[weatherData, setWeatherData] = useState();
   const location = useRef();
+  const [ideal,setIdeal] = useState();
 
   useEffect(() => {
     async function getCoordinates() {
@@ -74,86 +75,80 @@ const CropDiagnostics = () => {
     getCoordinates();
   }, []);
 
-  const healthyPlants = [
-    {
-      "name": "Apple",
-      "characteristics": [
+  const healthyPlants = {
+    Apple: {
+      characteristics: [
         "Glossy green surface",
         "Firm texture",
         "No visible spots or discoloration"
       ],
-      "img": "/appleHealthy.jpg"
+      img: "/appleHealthy.jpg"
     },
-    {
-      "name": "Corn",
-      "characteristics": [
+    Corn: {
+      characteristics: [
         "Long and broad green blades",
         "Smooth and even coloration",
         "No signs of wilting or browning tips"
       ],
-      "img":'/corn.jpg'
+      img: "/corn.jpg"
     },
-    {
-      "name": "Grape",
-      "characteristics": [
+    Grape: {
+      characteristics: [
         "Broad and lobed green leaves",
         "Smooth texture with no curling",
         "Absence of powdery mildew or discoloration"
       ],
-      "img":'/grape.jpg'
-      },
-    {
-      "name": "Orange",
-      "characteristics": [
+      img: "/grape.jpg"
+    },
+    Orange: {
+      characteristics: [
         "Dark green, shiny, and leathery leaves",
         "Firm and well-attached to branches",
         "No yellowing or pest damage"
       ],
-      "img":'/orange.jpg'
+      img: "/orange.jpg"
     },
-    {
-      "name": "Potato",
-      "characteristics": [
+    Potato: {
+      characteristics: [
         "Dark green, compound leaves",
         "Smooth and firm texture",
         "No spots or wilting from blight"
       ],
-      "img":'/potato.jpg'
-      },
-    {
-      "name": "Tomato",
-      "characteristics": [
+      img: "/potato.jpg"
+    },
+    Tomato: {
+      characteristics: [
         "Dark green and deeply lobed leaves",
         "Soft, velvety texture",
         "No visible spots or wilting"
       ],
-      "img":'/tomato.jpg'
-        }
-
-  ]
+      img: "/tomato.jpg"
+    }
+  };
 
   // Existing handlers remain the same
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
-    if (file) {
-      setImage(URL.createObjectURL(file));
-    }
+    setImage(file);
   };
   
   const performDiagnosis = () => {
     setIsLoading(true);
     socket.connect();
-    socket.emit("upload", image, weatherData, (status) => {
-      console.log("Status",status);
+    
+    socket.on('response', (response) => {
+        console.log(response);
+        setDiagnosis(response);
+        setIdeal(healthyPlants[response.plantName]);
+        setIsLoading(false);
     });
-    setIsLoading(false);
-  };
 
-  const handleReset = () => {
-    setImage(null);
-    setDiagnosis(null);
-    setIsChatOpen(false);
-    setChatMessages([]);
+    socket.on('error', (error) => {
+        console.error('Error:', error);
+        setIsLoading(false);
+    });
+
+    socket.emit("upload", image, weatherData);
   };
 
   const handleUserMessage = (e) => {
@@ -249,7 +244,7 @@ const CropDiagnostics = () => {
                       <div className="bg-white p-4 rounded-lg shadow-inner border-2 border-green-100">
                         {image && (
                           <img
-                            src={image}
+                            src={diagnosis.imageUrl}
                             alt="Your plant"
                             className="w-64 h-64 object-contain mx-auto"
                           />
@@ -262,7 +257,7 @@ const CropDiagnostics = () => {
                       <div className="md:hidden h-px w-48 bg-green-300 border-dashed border-2"></div>
                       <div className="bg-green-100 px-4 py-2 rounded-full">
                         <p className="text-lg font-semibold text-green-800">
-                          {diagnosis.similarity}% Similar
+                          50 % Similar
                         </p>
                       </div>
                     </div>
@@ -273,7 +268,7 @@ const CropDiagnostics = () => {
                       </h3>
                       <div className="bg-white p-4 rounded-lg shadow-inner border-2 border-green-100">
                         <img
-                          src="/api/placeholder/256/256"
+                          src= {ideal.img}
                           alt="Ideal plant state"
                           className="w-64 h-64 object-contain mx-auto"
                         />
@@ -284,30 +279,30 @@ const CropDiagnostics = () => {
                   {/* Disease Info */}
                   <div className="bg-green-50 p-6 rounded-lg mb-8">
                     <h3 className="text-xl font-bold text-green-800 mb-4">Disease Analysis:</h3>
-                    {diagnosis.diseases.map((disease, index) => (
-                      <div key={index} className="ml-6 mb-4 bg-white p-4 rounded-lg shadow-sm">
-                        <p className="text-lg font-semibold text-green-700 mb-2">{disease.name}</p>
-                        <p className="text-gray-700 mb-2">Symptoms: {disease.symptoms}</p>
-                        <p className="text-gray-600">Severity: {disease.severity}</p>
+                    
+                      <div className="ml-6 mb-4 bg-white p-4 rounded-lg shadow-sm">
+                        <p className="text-lg font-semibold text-green-700 mb-2">{diagnosis.diseaseName}</p>
+                        <p className="text-gray-700 mb-2">Symptoms: {diagnosis.diseaseDescription}</p>
+                        {/* <p className="text-gray-600">Severity: {disease.severity}</p> */}
                       </div>
-                    ))}
+                  
                   </div>
                   <div className="bg-green-50 p-6 rounded-lg mb-8">
                     <h3 className="text-xl font-bold text-green-800 mb-4">Ideal State Characterstics:</h3>
-                    {diagnosis.diseases.map((disease, index) => (
-                      <div key={index} className="ml-6 mb-4 bg-white p-4 rounded-lg shadow-sm">
-                        <p className="text-lg font-semibold text-green-700 mb-2">{disease.name}</p>
-                        <p className="text-gray-700 mb-2">Symptoms: {disease.symptoms}</p>
-                        <p className="text-gray-600">Severity: {disease.severity}</p>
+                    {ideal?.characteristics.map((character) => (
+                        <div className="ml-6 mb-4 bg-white p-4 rounded-lg shadow-sm">
+                        <p className="text-lg font-semibold text-green-700 mb-2">{character}</p>
                       </div>
                     ))}
+                      
+        
                   </div>
 
                   {/* Recommendations */}
                   <div className="bg-green-50 p-6 rounded-lg mb-8">
                     <h3 className="text-xl font-bold text-green-800 mb-4">Recommended Solutions:</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {diagnosis.pesticides.map((pesticide, index) => (
+                      {diagnosis.remedy.map((pesticide, index) => (
                         <div key={index} className="bg-white p-4 rounded-lg shadow-sm">
                           <p className="text-green-700">{pesticide}</p>
                         </div>

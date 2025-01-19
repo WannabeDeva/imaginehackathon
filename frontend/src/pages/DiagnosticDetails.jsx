@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
@@ -12,21 +12,36 @@ import {
   RefreshCw,
   History
 } from "lucide-react";
+import { useParams } from "react-router-dom";
 
 const DiagnosticsDetails = () => {
+  const {id} = useParams();
+  console.log(id);
   const [image, setImage] = useState(null);
   const [diagnosis, setDiagnosis] = useState(null);
-  const [diagnosisLog, setDiagnosisLog] = useState([
-    {
-      date: "2025-01-15",
-      similarity: 78,
-      diseases: [
-        { name: "Leaf Spot", symptoms: "Brown spots on leaves", severity: "Medium" },
-      ],
-      pesticides: ["Neem Oil", "Copper Fungicide"],
-    },
-  ]);
+  const [diagnosisLog, setDiagnosisLog] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  
+  useEffect(() => {
+    async function fetchReport() {
+      try {
+        const res = await fetch(`http://localhost:3000/report/${encodeURIComponent(id)}`);
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+  
+        const responseData = await res.json();
+        console.log(responseData.data); // Data from the API
+        setDiagnosisLog(responseData.data); // Assuming you have this state
+      } catch (error) {
+        console.error("Error fetching report:", error);
+      }
+    }
+  
+    fetchReport();
+  }, [id]);
+  
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -72,40 +87,7 @@ const DiagnosticsDetails = () => {
         </div>
 
         {/* Upload Section */}
-        <Card className="mb-8 border-2 border-black/50 shadow-lg">
-          <CardHeader className="bg-green-50">
-            <CardTitle className="text-xl flex items-center gap-2 text-green-800">
-              <FileUp className="w-5 h-5" />
-              Upload Latest Crop Image
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-full max-w-md">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="block w-full text-sm text-green-900
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-full file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-green-50 file:text-green-700
-                    hover:file:bg-green-100
-                    cursor-pointer border-2 border-dashed
-                    border-green-200 rounded-lg p-8
-                    hover:border-green-300 transition-colors"
-                />
-              </div>
-              {isLoading && (
-                <div className="flex items-center gap-2 text-green-600">
-                  <RefreshCw className="w-5 h-5 animate-spin" />
-                  <span className="font-semibold">Analyzing...</span>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        
 
         {/* Latest Diagnosis Section */}
         {diagnosis && (
@@ -116,7 +98,7 @@ const DiagnosticsDetails = () => {
             <CardContent className="p-6">
               <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-8">
                 <div className="flex-1 text-center">
-                  <h3 className="font-bold text-lg text-green-700 mb-4">Your Plant</h3>
+                  <h3 className="font-bold text-lg text-green-700 mb-4">{diagnosis.plantName}</h3>
                   <div className="bg-white p-4 rounded-lg shadow-inner border-2 border-green-100">
                     {image && (
                       <img
@@ -198,7 +180,7 @@ const DiagnosticsDetails = () => {
                 <div key={index} className="bg-white p-6 rounded-lg shadow-sm border border-green-100">
                   <div className="flex items-center gap-2 mb-4 text-green-700">
                     <Calendar className="w-5 h-5" />
-                    <h3 className="font-bold">{log.date}</h3>
+                    <h3 className="font-bold">{new Date(log.createdAt).toLocaleDateString()}</h3>
                   </div>
                   
                   <div className="grid gap-4">
@@ -210,19 +192,18 @@ const DiagnosticsDetails = () => {
                     <div>
                       <p className="font-semibold mb-2">Diseases:</p>
                       <ul className="space-y-2">
-                        {log.diseases.map((disease, i) => (
-                          <li key={i} className="ml-6 flex items-start gap-2">
+                          <li className="ml-6 flex items-start gap-2">
                             <span className="text-green-700">•</span>
-                            <span>{disease.name} ({disease.severity})</span>
+                            <span>{log.diseaseName}</span>
                           </li>
-                        ))}
+                       
                       </ul>
                     </div>
                     
                     <div>
                       <p className="font-semibold mb-2">Recommended Solutions:</p>
                       <ul className="space-y-2">
-                        {log.pesticides.map((pesticide, i) => (
+                        {log.remedy.map((pesticide, i) => (
                           <li key={i} className="ml-6 flex items-start gap-2">
                             <span className="text-green-700">•</span>
                             <span>{pesticide}</span>

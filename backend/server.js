@@ -66,7 +66,7 @@ io.on('connection', (socket) => {
                     "remedy": [],
                     "summary": ""
                 }
-               The response should include the plant's name under the field plantName, which must be one of the following: Apple, Grape, Corn, Orange, Potato, or Tomato. The identified disease under diseaseName, a concise description of the disease under diseaseDescription, extent of disease spread in the extent section, specific remedies to treat the disease in an array under remedy, and a brief general summary of the situation and recommended actions under summary.
+               The response should include the plant's name under the field plantName, which must be one of the following: Apple, Grape, Corn, Orange, Potato, or Tomato. The identified disease under diseaseName, a concise description of the disease under diseaseDescription, approx extent of spread of disease(it should be either high, medium or low), specific remedies to treat the disease in an array under remedy, and a brief general summary of the situation and recommended actions under summary.
 
 Ensure that the remedies and farming advice are aligned with sustainable and region-specific practices for India, Maharashtra. Use locally available solutions, considering the climatic and soil conditions in Maharashtra. Your suggestions should be practical and relevant for farmers in this region.
 
@@ -134,9 +134,11 @@ Keep the conversation human-like and interactive. Be concise, and ensure that yo
         })
         const result = await chatSession.sendMessage(`Analyze the image and respond according to above prompt also the weather conditions are ${JSON.stringify(weatherData)}`)
         const Airesponse = result.response.text()
-    
+        
         const uploadResult = await uploadOnCloudinary(file);
+        
         const imageUrl = uploadResult ? uploadResult.url : "";
+        
 
         const first_index = Airesponse.indexOf(`{`);
         const last_index = Airesponse.lastIndexOf(`}`);
@@ -169,8 +171,25 @@ const connectDB = async () => {
 
 app.get("/all_reports", async(req, res) => {
     try {
-        const data = await Disease.find()
+        const data = await Disease.find().sort({ timestamp: -1 });
+        console.log("Data", data);
+        
         return res.status(200).send(data)
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send("internal server error")
+    }
+})
+
+app.get("/report/:plantName", async(req, res) => {
+    try {
+        const {plantName} = req.params;
+        console.log(plantName);
+        
+        const data = await Disease.find({plantName}).sort({ timestamp: -1 });
+        console.log("Data", data);
+        
+        return res.status(200).json({data});
     } catch (error) {
         console.error(error)
         return res.status(500).send("internal server error")
