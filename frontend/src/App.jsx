@@ -16,8 +16,8 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/crop-diagnostics" element={<CropDiagnostics />} />
         <Route path="/history" element={<DiagnosticsHistory />} />
-        <Route path="/community-forum" element={<CommunityForum />} />
-        <Route path="/analytics" element={<Analytics />} />
+        {/* <Route path="/community-forum" element={<CommunityForum />} />
+        <Route path="/analytics" element={<Analytics />} /> */}
         <Route path="/history/:id" element={<DiagnosticDetails />} />
         {/* <Route path="/consultation" element={<Consultation />} /> */}
       </Routes>
