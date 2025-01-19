@@ -273,7 +273,7 @@ export default function Chatbot() {
   };
 
   return (
-    <>
+    <div className="flex justify-center">
       <button
         className="button AIbutton"
         id="AIbutton"
@@ -323,6 +323,6 @@ export default function Chatbot() {
           <p>{chatContent ? chatContent : null}</p>
         </div>
       ) : null}
-    </>
+    </div>
   );
 }

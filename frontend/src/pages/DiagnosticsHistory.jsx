@@ -53,7 +53,7 @@ useState
                   </div>
                   <div className="flex items-center gap-2 text-gray-600">
                     <Calendar className="w-4 h-4" />
-                    <span className="text-sm">{diagnostic.createdAt}</span>
+                    <span className="text-sm">{new Date(diagnostic.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
               </CardHeader>
