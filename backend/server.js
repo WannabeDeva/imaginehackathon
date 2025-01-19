@@ -65,7 +65,7 @@ io.on('connection', (socket) => {
                     "remedy": [],
                     "summary": ""
                 }
-               The response should include the plant's name under the field plantName, the identified disease under diseaseName, a concise description of the disease under diseaseDescription, specific remedies to treat the disease in an array under remedy, and a brief general summary of the situation and recommended actions under summary.
+               The response should include the plant's name under the field plantName, which must be one of the following: Apple, Grape, Corn, Orange, Potato, or Tomato. The identified disease under diseaseName, a concise description of the disease under diseaseDescription, specific remedies to treat the disease in an array under remedy, and a brief general summary of the situation and recommended actions under summary.
 
 Ensure that the remedies and farming advice are aligned with sustainable and region-specific practices for India, Maharashtra. Use locally available solutions, considering the climatic and soil conditions in Maharashtra. Your suggestions should be practical and relevant for farmers in this region.
 
