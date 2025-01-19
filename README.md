@@ -78,7 +78,7 @@ AgriBandhu (Farmer's Companion) is an AI-powered platform designed to assist far
 ## **Contributors**
 Team: NPM RUN DEVA
 
-Team members:
+Team members: <br />
 Devanshu Kadam <br />
 Om Pawaskar <br />
 Aryan Maurya <br />
