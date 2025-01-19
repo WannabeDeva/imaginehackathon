@@ -115,7 +115,7 @@ const DiagnosticsDetails = () => {
                   <div className="md:hidden h-px w-48 bg-green-300 border-dashed border-2"></div>
                   <div className="bg-green-100 px-4 py-2 rounded-full">
                     <p className="text-lg font-semibold text-green-800">
-                      {diagnosis.similarity}% Similar
+                      Extent of spread: {diagnosis.extent}
                     </p>
                   </div>
                 </div>
@@ -184,10 +184,6 @@ const DiagnosticsDetails = () => {
                   </div>
                   
                   <div className="grid gap-4">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-5 h-5 text-green-600" />
-                      <span className="font-semibold">Similarity: {log.similarity}%</span>
-                    </div>
                     
                     <div>
                       <p className="font-semibold mb-2">Diseases:</p>

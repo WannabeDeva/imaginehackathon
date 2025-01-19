@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import { Leaf, Upload, Send, MessageSquare, RefreshCw } from "lucide-react";
 import { socket } from "@/lib/socket";
 import axios from "axios";
+import Chatbot from "@/components/Chatbot";
 
 const CropDiagnostics = () => {
   const [image, setImage] = useState(null);
@@ -16,6 +17,7 @@ const CropDiagnostics = () => {
   const[weatherData, setWeatherData] = useState();
   const location = useRef();
   const [ideal,setIdeal] = useState();
+  const [similar,setSimilar] = useState(34);
 
   useEffect(() => {
     async function getCoordinates() {
@@ -140,6 +142,13 @@ const CropDiagnostics = () => {
         console.log(response);
         setDiagnosis(response);
         setIdeal(healthyPlants[response.plantName]);
+        if(response.estimate == "Medium")
+          setSimilar(40);
+        if(response.estimate == "High")
+          setSimilar(20);
+        if(response.estimate == "Low")
+          setSimilar(75);
+        
         setIsLoading(false);
     });
 
@@ -240,7 +249,7 @@ const CropDiagnostics = () => {
                   {/* Image Comparison */}
                   <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-8">
                     <div className="flex-1 text-center">
-                      <h3 className="font-bold text-lg text-green-700 mb-4">Your Plant</h3>
+                      <h3 className="font-bold text-lg text-green-700 mb-4">{diagnosis.plantName}</h3>
                       <div className="bg-white p-4 rounded-lg shadow-inner border-2 border-green-100">
                         {image && (
                           <img
@@ -257,7 +266,7 @@ const CropDiagnostics = () => {
                       <div className="md:hidden h-px w-48 bg-green-300 border-dashed border-2"></div>
                       <div className="bg-green-100 px-4 py-2 rounded-full">
                         <p className="text-lg font-semibold text-green-800">
-                          50 % Similar
+                          {similar}% Similar
                         </p>
                       </div>
                     </div>
@@ -378,6 +387,7 @@ const CropDiagnostics = () => {
           </div>
         )}
       </div>
+      <Chatbot />
     </div>
   );
 };
