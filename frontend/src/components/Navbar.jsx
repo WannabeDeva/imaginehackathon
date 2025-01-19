@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom"; // Import useLocation
 import { Button } from "@/components/ui/button";
 import { Leaf, History, Users, BarChart2, Menu, X } from "lucide-react";
+import logo from "../assets/logo.png"
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -10,8 +11,7 @@ const Navbar = () => {
   const navItems = [
     { to: "/crop-diagnostics", label: "Crop Diagnostics", icon: Leaf },
     { to: "/history", label: "Previous Diagnostics", icon: History },
-    { to: "/community-forum", label: "Community Forum", icon: Users },
-    { to: "/analytics", label: "Analytics", icon: BarChart2 },
+    
   ];
 
   return (
@@ -24,10 +24,7 @@ const Navbar = () => {
             to="/" 
             className="flex items-center gap-2 transition-transform hover:scale-105"
           >
-            <Leaf className="h-6 w-6 text-green-200" />
-            <h1 className="text-2xl font-bold text-green-50">
-              AgriCare Hub
-            </h1>
+            <img src={logo} alt="logo" width={250} />
           </Link>
 
           {/* Desktop Menu */}

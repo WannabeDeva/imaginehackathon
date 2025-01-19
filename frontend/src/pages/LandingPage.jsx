@@ -7,13 +7,14 @@ import { RiHistoryLine } from "react-icons/ri"; // For Diagnostics Log
 import { BsChatDots } from "react-icons/bs"; // For Chat Feature
 import Navbar from "@/components/Navbar";
 import Chatbot from "@/components/Chatbot";
+import Hero from "@/components/Hero";
 
 const LandingPage = () => {
   return (
     <div>
       <Navbar />
       {/* Hero Section */}
-      
+      <Hero />
 
       {/* Features Section */}
       <section className="py-20 px-4 bg-gray-50">
