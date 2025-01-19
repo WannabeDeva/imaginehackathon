@@ -216,7 +216,7 @@ export default function Chatbot() {
         return;
       }
 
-      const parts = response.split(" ");
+      const parts = raw_response.split(" ");
 
       let pagename;
 
@@ -229,20 +229,10 @@ export default function Chatbot() {
         const pageRoutes = {
           home: "/",
           homepage: "/",
-          wishlist: "/wishlist",
-          wishlistpage: "/wishlist",
-          cart: "/cart",
-          cartpage: "/cart",
-          dashboard: "/dashboard",
-          dashboardpage: "/dashboard",
-          community: "/community",
-          communitypage: "/community",
-          caregiver: "/caregiver",
-          caregiverpage: "/caregiver",
-          doctor: "/doctor",
-          doctorpage: "/doctor",
-          medicalrecords: "/medical",
-          medicalrecordspage: "/medical",
+          cropdiagnostic: "/crop-diagnostics",
+          cropdiagnosticpage: "/crop-diagnostics",
+          previousdiagnostic: "/history",
+          previousdiagnosticpage: "/history",
         };
 
         // Check if the normalized page name exists in the mapping
@@ -298,9 +288,9 @@ export default function Chatbot() {
         }}
         onChange={(e) => upload(e.target.files[0])}
       />
-      <button ref={inputButtonRef} onClick={() => inputFileRef.current.click()}>
+      {/* <button ref={inputButtonRef} onClick={() => inputFileRef.current.click()}>
         Upload File
-      </button>
+      </button> */}
       {chatVisibility ? (
         <div className="output-div" id="output-div">
           <button

@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom"; // Import useLocation
 import { Button } from "@/components/ui/button";
 import { Leaf, History, Users, BarChart2, Menu, X } from "lucide-react";
 import logo from "../assets/logo.png"
+import LanguageSwitch from "./LanguageSwitch";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -47,6 +48,8 @@ const Navbar = () => {
                 </Link>
               );
             })}
+          <LanguageSwitch />
+
           </div>
 
           {/* Mobile Menu Button */}
@@ -95,8 +98,11 @@ const Navbar = () => {
               );
             })}
           </div>
+          <LanguageSwitch />
         </div>
+        
       </div>
+      
     </nav>
   );
 };

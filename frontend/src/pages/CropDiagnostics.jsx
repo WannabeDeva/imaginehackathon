@@ -138,7 +138,7 @@ const CropDiagnostics = () => {
     setIsLoading(true);
     socket.connect();
     
-    socket.on('response', (response) => {
+    socket.on('diagnostic', (response) => {
         console.log(response);
         setDiagnosis(response);
         setIdeal(healthyPlants[response.plantName]);
@@ -277,7 +277,7 @@ const CropDiagnostics = () => {
                       </h3>
                       <div className="bg-white p-4 rounded-lg shadow-inner border-2 border-green-100">
                         <img
-                          src= {ideal.img}
+                          src= {ideal?.img}
                           alt="Ideal plant state"
                           className="w-64 h-64 object-contain mx-auto"
                         />
@@ -386,6 +386,7 @@ const CropDiagnostics = () => {
             </Card>
           </div>
         )}
+        <Chatbot />
       </div>
       <Chatbot />
     </div>

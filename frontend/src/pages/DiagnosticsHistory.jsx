@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Leaf, AlertCircle, CheckCircle2, ChevronRight, History } from "lucide-react";
+import Chatbot from "@/components/Chatbot";
 
 const DiagnosticsHistory = () => {
   const navigate = useNavigate();
@@ -93,6 +94,7 @@ useState
           </Card>
         )}
       </div>
+      <Chatbot />
     </div>
   );
 };
