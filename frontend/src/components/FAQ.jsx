@@ -58,7 +58,7 @@ const FAQ = () => {
       
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
+    <div className="max-w-3xl mx-auto px-4 py-8 ">
       <h2 className="text-3xl font-bold text-center mb-4">Frequently Asked Questions</h2>
       <p className="text-center text-gray-600 font-semibold text-muted-foreground mb-8">
         Get answers to the frequently asked questions about Karigar

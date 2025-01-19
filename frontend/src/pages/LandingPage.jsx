@@ -17,7 +17,7 @@ const LandingPage = () => {
       <Hero />
 
       {/* Features Section */}
-      <section className="py-20 px-4 bg-gray-50">
+      <section className="py-20 px-4 bg-green-50">
   <div className="max-w-6xl mx-auto text-center">
     <h2 className="text-3xl font-bold mb-12">Our Features</h2>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
