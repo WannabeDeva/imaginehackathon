@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -8,32 +8,26 @@ import { Calendar, Leaf, AlertCircle, CheckCircle2, ChevronRight, History } from
 const DiagnosticsHistory = () => {
   const navigate = useNavigate();
 
-  const diagnostics = [
-    {
-      title: "Tomato Crop Diagnosis - Jan 15, 2025",
-      summary: "Leaf Blight detected with 75% similarity. Suggested remedies include copper fungicide and neem oil spray.",
-      status: "warning",
-      crop: "Tomato",
-      date: "Jan 15, 2025"
-    },
-    {
-      title: "Wheat Crop Diagnosis - Jan 10, 2025",
-      summary: "Powdery Mildew detected with 60% similarity. Suggested remedies include sulfur spray and organic treatments.",
-      status: "warning",
-      crop: "Wheat",
-      date: "Jan 10, 2025"
-    },
-    {
-      title: "Corn Crop Diagnosis - Jan 5, 2025",
-      summary: "No significant issues detected. Crop is healthy.",
-      status: "healthy",
-      crop: "Corn",
-      date: "Jan 5, 2025"
-    },
-  ];
+  const [diagnostics, setDiagnostics] = useState([]); // Initialize state
 
-  const handleViewDetails = () => {
-    navigate("/diagnostic-details");
+useEffect(() => {
+  async function getData() {
+    try {
+      const res = await fetch('http://localhost:3000/all_reports');
+      const data = await res.json();
+      console.log(data);
+      
+      setDiagnostics(data); // Update state with the fetched data
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  getData();
+}, []);
+useState
+  const handleViewDetails = (name) => {
+    navigate(`/history/${name}`);
   };
 
   return (
@@ -55,11 +49,11 @@ const DiagnosticsHistory = () => {
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-2">
                     <Leaf className="w-5 h-5 text-green-600" />
-                    <CardTitle className="text-xl text-green-800">{diagnostic.crop}</CardTitle>
+                    <CardTitle className="text-xl text-green-800">{diagnostic.plantName}</CardTitle>
                   </div>
                   <div className="flex items-center gap-2 text-gray-600">
                     <Calendar className="w-4 h-4" />
-                    <span className="text-sm">{diagnostic.date}</span>
+                    <span className="text-sm">{diagnostic.createdAt}</span>
                   </div>
                 </div>
               </CardHeader>
@@ -76,7 +70,9 @@ const DiagnosticsHistory = () => {
                 
                 <div className="flex justify-end">
                   <Button
-                    onClick={handleViewDetails}
+                    onClick={() => {
+                      handleViewDetails(diagnostic.plantName);
+                    }}
                     className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2 transform transition-transform hover:translate-x-1"
                   >
                     View Details
