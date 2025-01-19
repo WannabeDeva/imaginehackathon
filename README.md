@@ -52,19 +52,19 @@ AgriBandhu (Farmer's Companion) is an AI-powered platform designed to assist far
 
 ### **Crop Diagnostics**
 ![image](https://github.com/user-attachments/assets/abd08aa3-b7c7-4f30-940d-13d2def61b86)
+![Screenshot (227)](https://github.com/user-attachments/assets/3a475a57-d2cc-4917-8e18-404aee5cafd5)
+![Screenshot (228)](https://github.com/user-attachments/assets/4801da6f-d634-4199-a837-71869a59f489)
+![Screenshot (229)](https://github.com/user-attachments/assets/6a380477-7be1-4172-a6d0-c58956f2d26c)
+
 
 ### **Diagnostics History**
-![Diagnostics History Screenshot](path-to-history-screenshot)
+![Screenshot (230)](https://github.com/user-attachments/assets/9ca87153-f4d8-4897-b541-411bd8e9f001)
+![Screenshot (231)](https://github.com/user-attachments/assets/d6bafe3d-3479-4109-aa98-9f2301ac486f)
+![Screenshot (232)](https://github.com/user-attachments/assets/b07c574f-ef83-4cbc-82f4-3e49ee1e7efe)
+
 
 ---
 
-## **Challenges Faced**
-
-- **Model Training**: Ensuring the AI model provides accurate disease detection and recommendations.
-- **User Experience**: Designing an interface that is simple yet powerful for farmers.
-- **Real-Time Voice Assistant**: Integrating voice AI to handle diverse farmer queries effectively.
-
----
 
 ## **Future Scope**
 
@@ -76,17 +76,12 @@ AgriBandhu (Farmer's Companion) is an AI-powered platform designed to assist far
 ---
 
 ## **Contributors**
-- [Your Name 1](https://github.com/your-profile)
-- [Your Name 2](https://github.com/your-profile)
-- [Your Name 3](https://github.com/your-profile)
+Team: NPM RUN DEVA
 
----
+Team members:
+Devanshu Kadam
+Om Pawaskar
+Aryan Maurya
 
-## **License**
-This project is licensed under the [MIT License](LICENSE).
 
----
-
-## **Acknowledgments**
-We extend our gratitude to the hackathon organizers, mentors, and all contributors who supported this project.
 
